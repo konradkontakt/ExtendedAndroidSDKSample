@@ -72,6 +72,10 @@ public class MainActivity extends AppCompatActivity {
                 .execute(new CloudCallback<Devices>() {
                     @Override public void onSuccess(Devices response, CloudHeaders headers) {
                         List<Device> content = response.getContent();
+                        for (Device device : content) {
+                            String uid = device.getUniqueId();
+                            Log.d(TAG, uid);
+                        }
                     }
                     @Override public void onError(CloudError error) {
                         showToast("Connection error");
@@ -180,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
     }
     public void sdkInitialise()
     {
-        KontaktSDK.initialize("Your_Secret_API_Key");
+        KontaktSDK.initialize("Your Secret API Key");
         if (KontaktSDK.isInitialized())
             Log.v(TAG, "SDK initialised");
     }
