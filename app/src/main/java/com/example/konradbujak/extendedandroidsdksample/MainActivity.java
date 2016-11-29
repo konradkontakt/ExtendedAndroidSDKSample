@@ -33,11 +33,15 @@ import com.kontakt.sdk.android.cloud.response.CloudCallback;
 import com.kontakt.sdk.android.cloud.response.CloudError;
 import com.kontakt.sdk.android.cloud.response.CloudHeaders;
 import com.kontakt.sdk.android.cloud.response.paginated.Actions;
+import com.kontakt.sdk.android.cloud.response.paginated.Devices;
 import com.kontakt.sdk.android.common.KontaktSDK;
 import com.kontakt.sdk.android.common.Proximity;
+import com.kontakt.sdk.android.common.model.Access;
 import com.kontakt.sdk.android.common.model.Action;
+import com.kontakt.sdk.android.common.model.Device;
 import com.kontakt.sdk.android.common.profile.IBeaconDevice;
 import com.kontakt.sdk.android.common.profile.IBeaconRegion;
+import com.kontakt.sdk.android.common.profile.IEddystoneDevice;
 import com.kontakt.sdk.android.common.profile.IEddystoneNamespace;
 
 import java.util.ArrayList;
@@ -55,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
     public static String urls;
     public static Proximity proximity;
     //Replace (Your Secret API key) with your API key aquierd from the Kontakt.io Web Panel
-    public static String API_KEY = "Your Secret API key";
+    public static String API_KEY = "QcZNRdfovwLcPVFAvbHgacOnfGBkcHco";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -173,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
     private void apiendpoints() {
         IKontaktCloud kontaktCloud = KontaktCloud.newInstance(API_KEY);
         //Fetching all devices from API
-/*        kontaktCloud.devices().fetch()
+        kontaktCloud.devices().fetch()
                 .maxResult(10) //default is 50
                 .startIndex(0)
                 .access(Access.OWNER)
@@ -188,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override public void onError(CloudError error) {
                         showToast("Connection error");
                     }
-                });*/
+                });
         // Setting up Browser Content ( can be done via Web Panel too )
         // for beacon with uniqueId 4HXX( replace this uniqueId with yours)
         // REMEMBER : it will create another action each time you will start application
@@ -274,8 +278,8 @@ public class MainActivity extends AppCompatActivity {
     public IBeaconListener createIBeaconListener() {
         return new SimpleIBeaconListener() {
             @Override
-            public void onIBeaconDiscovered(IBeaconDevice ibeacon, IBeaconRegion beaconRegion) {
-                if ("4HXX".equals(beaconRegion.getIdentifier())) {
+            public void onIBeaconDiscovered(IBeaconDevice ibeacon, IBeaconRegion beaconRegions) {
+                if ("4HXX".equals(beaconRegions.getIdentifier())) {
                     Log.d(TAG, "4HXX discovered with proximity : " + ibeacon.getProximity());
                     // if beacon is in the same proximity that was set for Browser Content action
                     // it will open the link in the default browser
@@ -287,22 +291,21 @@ public class MainActivity extends AppCompatActivity {
                         startActivity(intent);
                     }
                 }
-/*                if ("region".equals(beaconRegion.getIdentifier())) {
-                    Log.d(TAG, beaconRegion.getIdentifier() + "  discovered! "+ ibeacon.getUniqueId() + " Proximity : " + ibeacon.getProximity());
-                    showToast(beaconRegion.getIdentifier() + " entered");
+                if ("region".equals(beaconRegions.getIdentifier())) {
+                    Log.d(TAG, beaconRegions.getIdentifier() + "  discovered! "+ ibeacon.getUniqueId() + " Proximity : " + ibeacon.getProximity());
+                    showToast(beaconRegions.getIdentifier() + " entered");
                 }
-                if ("region2".equals(beaconRegion.getIdentifier())){
-                    Log.d(TAG, beaconRegion.getIdentifier() + "  discovered! "+ ibeacon.getUniqueId() + " Proximity : " + ibeacon.getProximity());
-                    showToast(beaconRegion.getIdentifier() + " entered");
-                }*/
+                if ("region2".equals(beaconRegions.getIdentifier())){
+                    Log.d(TAG, beaconRegions.getIdentifier() + "  discovered! "+ ibeacon.getUniqueId() + " Proximity : " + ibeacon.getProximity());
+                    showToast(beaconRegions.getIdentifier() + " entered");
+                }
             }
                 @Override
-                public void onIBeaconsUpdated (List < IBeaconDevice > ibeacons, IBeaconRegion
-                beaconRegion){
+                public void onIBeaconsUpdated (List < IBeaconDevice > ibeacons, IBeaconRegion beaconRegions){
                     // when discovered beacon was not in the set proximity but it can be in the future
                     // monitor the proximity for it
                     for (IBeaconDevice ibeacon : ibeacons) {
-                        if ("4HXX".equals(beaconRegion.getIdentifier())) {
+                        if ("4HXX".equals(beaconRegions.getIdentifier())) {
                             Log.d(TAG, "4HXX updated with proximity : " + ibeacon.getProximity());
                             if (proximity.equals(ibeacon.getProximity()))
                             {
@@ -312,15 +315,14 @@ public class MainActivity extends AppCompatActivity {
                                 startActivity(intent);
                             }
                         }
-                        // Log.d(TAG, beaconRegion.getIdentifier() + "  updated! " + ibeacon.getUniqueId() + " RSSI :" + ibeacon.getRssi());
+                        Log.d(TAG, beaconRegions.getIdentifier() + "  updated! " + ibeacon.getUniqueId() + " RSSI :" + ibeacon.getRssi());
 
                     }
                 }
-/*                @Override public void onIBeaconLost (IBeaconDevice ibeacon, IBeaconRegion
-                beaconRegion){
+                @Override public void onIBeaconLost (IBeaconDevice ibeacon, IBeaconRegion beaconRegion){
                     Log.d(TAG, beaconRegion.getIdentifier() + " lost! ");
                     showToast(beaconRegion.getIdentifier() + " lost!  ");
-                }*/
+                }
         };
     }
     private ScanStatusListener createScanStatusListener() {
@@ -341,7 +343,21 @@ public class MainActivity extends AppCompatActivity {
     }
     private EddystoneListener createEddystoneListener(){
         return new SimpleEddystoneListener(){
+            @Override
+            public void onEddystoneDiscovered(IEddystoneDevice eddystone, IEddystoneNamespace namespace) {
+                if ("namespace1".equals(namespace.getIdentifier())) {
+                    Log.d(TAG, namespace.getIdentifier() + " discovered with proximity : " + eddystone.getProximity());
+                }
+            }
+            @Override
+            public void onEddystonesUpdated(List<IEddystoneDevice> eddystones, IEddystoneNamespace namespace) {
+                // TODO
+            }
 
+            @Override
+            public void onEddystoneLost(IEddystoneDevice eddystone, IEddystoneNamespace namespace) {
+                // TODO
+            }
         };
     }
     private void startScan() {
