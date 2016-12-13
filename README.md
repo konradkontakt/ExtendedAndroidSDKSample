@@ -20,14 +20,14 @@ Download the whole archive and open it as Android Studio project.
 
 #### Option 2
 
-You can also only copy the code from the java files but than remember to add in gradle :
+You can also only copy the code from the java files but than remember to add in *build.gradle* for the app
 
 ```
 dependencies {
-    compile 'com.kontaktio:sdk:{version}'
+    compile 'com.kontaktio:sdk:3.2.0'
 }
 ```
-also in AndroidManifest.xml you will need to add permissions listed below if you still did not do it
+also in *AndroidManifest.xml* you will need to add permissions listed below if you still did not do it
 
 ```
 <uses-permission android:name="android.permission.BLUETOOTH"/>
