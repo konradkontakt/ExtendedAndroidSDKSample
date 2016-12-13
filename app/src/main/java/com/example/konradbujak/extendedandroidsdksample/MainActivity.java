@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
     public static String urls;
     public static Proximity proximity;
     //Replace (Your Secret API key) with your API key aquierd from the Kontakt.io Web Panel
-    public static String API_KEY = "QcZNRdfovwLcPVFAvbHgacOnfGBkcHco";
+    public static String API_KEY = "(Your Secret API key)";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
