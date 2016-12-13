@@ -46,7 +46,7 @@ and also enable our Proximity service in the application section
 
 ## Authors
 
-* **Konrad Bujak** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
+* **Konrad Bujak**
 
 See also the list of [contributors](https://github.com/konradkontakt/ExtendedAndroidSDKSample/graphs/contributors) who participated in this project.
 
