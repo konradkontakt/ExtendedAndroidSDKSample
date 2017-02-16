@@ -13,12 +13,13 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.kontakt.sdk.android.ble.configuration.ActivityCheckConfiguration;
+import com.kontakt.sdk.android.ble.configuration.ScanMode;
 import com.kontakt.sdk.android.ble.configuration.ScanPeriod;
-import com.kontakt.sdk.android.ble.configuration.scan.ScanMode;
 import com.kontakt.sdk.android.ble.connection.OnServiceReadyListener;
 import com.kontakt.sdk.android.ble.device.BeaconRegion;
 import com.kontakt.sdk.android.ble.device.EddystoneNamespace;
 import com.kontakt.sdk.android.ble.manager.ProximityManager;
+import com.kontakt.sdk.android.ble.manager.ProximityManagerFactory;
 import com.kontakt.sdk.android.ble.manager.listeners.EddystoneListener;
 import com.kontakt.sdk.android.ble.manager.listeners.IBeaconListener;
 import com.kontakt.sdk.android.ble.manager.listeners.ScanStatusListener;
@@ -26,8 +27,8 @@ import com.kontakt.sdk.android.ble.manager.listeners.simple.SimpleEddystoneListe
 import com.kontakt.sdk.android.ble.manager.listeners.simple.SimpleIBeaconListener;
 import com.kontakt.sdk.android.ble.manager.listeners.simple.SimpleScanStatusListener;
 import com.kontakt.sdk.android.ble.rssi.RssiCalculators;
-import com.kontakt.sdk.android.cloud.IKontaktCloud;
 import com.kontakt.sdk.android.cloud.KontaktCloud;
+import com.kontakt.sdk.android.cloud.KontaktCloudFactory;
 import com.kontakt.sdk.android.cloud.api.ActionsApi;
 import com.kontakt.sdk.android.cloud.response.CloudCallback;
 import com.kontakt.sdk.android.cloud.response.CloudError;
@@ -133,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
             Log.v(TAG, "SDK initialised");
     }
     private void configureProximityManager() {
-        KontaktManager = new ProximityManager(this);
+        KontaktManager = ProximityManagerFactory.create(this);
         KontaktManager.configuration()
                 .rssiCalculator(RssiCalculators.newLimitedMeanRssiCalculator(5))
                 .resolveShuffledInterval(3)
@@ -175,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "regions created");
     }
     private void apiendpoints() {
-        IKontaktCloud kontaktCloud = KontaktCloud.newInstance(API_KEY);
+        KontaktCloud kontaktCloud = KontaktCloudFactory.create(API_KEY);
         //Fetching all devices from API
         kontaktCloud.devices().fetch()
                 .maxResult(10) //default is 50
